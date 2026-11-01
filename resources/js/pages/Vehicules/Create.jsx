@@ -1,17 +1,17 @@
-import { Link, useForm } from "@inertiajs/react";
+import { Link, useForm } from '@inertiajs/react';
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
-        immatriculation: "",
-        type: "voiture",
-        marque: "",
-        modele: "",
-        statut: "actif",
+        immatriculation: '',
+        type: 'voiture',
+        marque: '',
+        modele: '',
+        statut: 'actif',
     });
 
     function handleSubmit(e) {
         e.preventDefault();
-        post("/vehicules");
+        post('/vehicules');
     }
 
     return (
@@ -26,7 +26,7 @@ export default function Create() {
                         type="text"
                         value={data.immatriculation}
                         onChange={(e) =>
-                            setData("immatriculation", e.target.value)
+                            setData('immatriculation', e.target.value)
                         }
                         required
                     />
@@ -38,7 +38,7 @@ export default function Create() {
                     <select
                         id="type"
                         value={data.type}
-                        onChange={(e) => setData("type", e.target.value)}
+                        onChange={(e) => setData('type', e.target.value)}
                         required
                     >
                         <option value="moto">Moto</option>
@@ -54,7 +54,7 @@ export default function Create() {
                         id="marque"
                         type="text"
                         value={data.marque}
-                        onChange={(e) => setData("marque", e.target.value)}
+                        onChange={(e) => setData('marque', e.target.value)}
                     />
                     {errors.marque && <p>{errors.marque}</p>}
                 </div>
@@ -65,7 +65,7 @@ export default function Create() {
                         id="modele"
                         type="text"
                         value={data.modele}
-                        onChange={(e) => setData("modele", e.target.value)}
+                        onChange={(e) => setData('modele', e.target.value)}
                     />
                     {errors.modele && <p>{errors.modele}</p>}
                 </div>
@@ -75,7 +75,7 @@ export default function Create() {
                     <select
                         id="statut"
                         value={data.statut}
-                        onChange={(e) => setData("statut", e.target.value)}
+                        onChange={(e) => setData('statut', e.target.value)}
                     >
                         <option value="actif">Actif</option>
                         <option value="immobilise">Immobilisé</option>
@@ -85,7 +85,7 @@ export default function Create() {
                 </div>
 
                 <button type="submit" disabled={processing}>
-                    {processing ? "Enregistrement..." : "Enregistrer"}
+                    {processing ? 'Enregistrement...' : 'Enregistrer'}
                 </button>
 
                 <Link href="/vehicules">Annuler</Link>

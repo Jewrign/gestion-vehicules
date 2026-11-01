@@ -1,10 +1,10 @@
-import { Link, useForm } from "@inertiajs/react";
+import { Link, useForm } from '@inertiajs/react';
 
 export default function Edit({ chauffeur }) {
     const { data, setData, put, processing, errors } = useForm({
         nom: chauffeur.nom,
         telephone: chauffeur.telephone,
-        numero_permis: chauffeur.numero_permis ?? "",
+        numero_permis: chauffeur.numero_permis ?? '',
     });
 
     function submit(e) {
@@ -27,7 +27,7 @@ export default function Edit({ chauffeur }) {
                         id="nom"
                         type="text"
                         value={data.nom}
-                        onChange={(e) => setData("nom", e.target.value)}
+                        onChange={(e) => setData('nom', e.target.value)}
                     />
 
                     {errors.nom && <p>{errors.nom}</p>}
@@ -40,7 +40,7 @@ export default function Edit({ chauffeur }) {
                         id="telephone"
                         type="text"
                         value={data.telephone}
-                        onChange={(e) => setData("telephone", e.target.value)}
+                        onChange={(e) => setData('telephone', e.target.value)}
                     />
 
                     {errors.telephone && <p>{errors.telephone}</p>}
@@ -54,7 +54,7 @@ export default function Edit({ chauffeur }) {
                         type="text"
                         value={data.numero_permis}
                         onChange={(e) =>
-                            setData("numero_permis", e.target.value)
+                            setData('numero_permis', e.target.value)
                         }
                     />
 
@@ -62,7 +62,7 @@ export default function Edit({ chauffeur }) {
                 </div>
 
                 <button type="submit" disabled={processing}>
-                    {processing ? "Modification..." : "Enregistrer"}
+                    {processing ? 'Modification...' : 'Enregistrer'}
                 </button>
             </form>
         </div>

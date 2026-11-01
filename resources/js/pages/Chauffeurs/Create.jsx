@@ -1,16 +1,16 @@
-import { Link, useForm } from "@inertiajs/react";
+import { Link, useForm } from '@inertiajs/react';
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
-        nom: "",
-        telephone: "",
-        numero_permis: "",
+        nom: '',
+        telephone: '',
+        numero_permis: '',
     });
 
     function submit(e) {
         e.preventDefault();
 
-        post("/chauffeurs");
+        post('/chauffeurs');
     }
 
     return (
@@ -27,7 +27,7 @@ export default function Create() {
                         id="nom"
                         type="text"
                         value={data.nom}
-                        onChange={(e) => setData("nom", e.target.value)}
+                        onChange={(e) => setData('nom', e.target.value)}
                     />
 
                     {errors.nom && <p>{errors.nom}</p>}
@@ -40,7 +40,7 @@ export default function Create() {
                         id="telephone"
                         type="text"
                         value={data.telephone}
-                        onChange={(e) => setData("telephone", e.target.value)}
+                        onChange={(e) => setData('telephone', e.target.value)}
                     />
 
                     {errors.telephone && <p>{errors.telephone}</p>}
@@ -54,7 +54,7 @@ export default function Create() {
                         type="text"
                         value={data.numero_permis}
                         onChange={(e) =>
-                            setData("numero_permis", e.target.value)
+                            setData('numero_permis', e.target.value)
                         }
                     />
 
@@ -62,7 +62,7 @@ export default function Create() {
                 </div>
 
                 <button type="submit" disabled={processing}>
-                    {processing ? "Enregistrement..." : "Ajouter"}
+                    {processing ? 'Enregistrement...' : 'Ajouter'}
                 </button>
             </form>
         </div>

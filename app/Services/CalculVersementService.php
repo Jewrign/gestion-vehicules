@@ -17,18 +17,9 @@ class CalculVersementService
     $date = $debut->copy();
 
     while ($date->lte($fin)) {
-      if ($contrat->frequence === 'journalier') {
 
-        if ($date->dayOfWeek !== Carbon::SUNDAY) {
-          $montant += $contrat->montant_journalier;
-        }
-      } elseif ($contrat->frequence === 'hebdomadaire') {
-
-        if (
-          $date->dayOfWeek !== Carbon::SUNDAY
-        ) {
-          $montant += $contrat->montant_journalier;
-        }
+      if ($date->dayOfWeek !== Carbon::SUNDAY) {
+        $montant += $contrat->montant_journalier;
       }
 
       $date->addDay();
@@ -108,7 +99,7 @@ class CalculVersementService
     $montantDu = $montantNormal
       - $montantJoursNonPayables
       - $montantDeductions
-      - $montantArriere;
+      + $montantArriere;
 
     $nouvel_arriere = max(0, $montantDu - $montantPaye);
 

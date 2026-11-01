@@ -1,11 +1,11 @@
-import { Link, useForm } from "@inertiajs/react";
+import { Link, useForm } from '@inertiajs/react';
 
 export default function Edit({ vehicule }) {
     const { data, setData, put, processing, errors } = useForm({
         immatriculation: vehicule.immatriculation,
         type: vehicule.type,
-        marque: vehicule.marque ?? "",
-        modele: vehicule.modele ?? "",
+        marque: vehicule.marque ?? '',
+        modele: vehicule.modele ?? '',
         statut: vehicule.statut,
     });
 
@@ -28,7 +28,7 @@ export default function Edit({ vehicule }) {
                         type="text"
                         value={data.immatriculation}
                         onChange={(e) =>
-                            setData("immatriculation", e.target.value)
+                            setData('immatriculation', e.target.value)
                         }
                         required
                     />
@@ -42,7 +42,7 @@ export default function Edit({ vehicule }) {
                     <select
                         id="type"
                         value={data.type}
-                        onChange={(e) => setData("type", e.target.value)}
+                        onChange={(e) => setData('type', e.target.value)}
                         required
                     >
                         <option value="moto">Moto</option>
@@ -60,7 +60,7 @@ export default function Edit({ vehicule }) {
                         id="marque"
                         type="text"
                         value={data.marque}
-                        onChange={(e) => setData("marque", e.target.value)}
+                        onChange={(e) => setData('marque', e.target.value)}
                     />
 
                     {errors.marque && <p>{errors.marque}</p>}
@@ -73,7 +73,7 @@ export default function Edit({ vehicule }) {
                         id="modele"
                         type="text"
                         value={data.modele}
-                        onChange={(e) => setData("modele", e.target.value)}
+                        onChange={(e) => setData('modele', e.target.value)}
                     />
 
                     {errors.modele && <p>{errors.modele}</p>}
@@ -85,7 +85,7 @@ export default function Edit({ vehicule }) {
                     <select
                         id="statut"
                         value={data.statut}
-                        onChange={(e) => setData("statut", e.target.value)}
+                        onChange={(e) => setData('statut', e.target.value)}
                     >
                         <option value="actif">Actif</option>
                         <option value="immobilise">Immobilisé</option>
@@ -97,8 +97,8 @@ export default function Edit({ vehicule }) {
 
                 <button type="submit" disabled={processing}>
                     {processing
-                        ? "Modification..."
-                        : "Enregistrer les modifications"}
+                        ? 'Modification...'
+                        : 'Enregistrer les modifications'}
                 </button>
 
                 <Link href="/vehicules">Annuler</Link>

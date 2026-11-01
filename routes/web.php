@@ -4,6 +4,7 @@ use App\Http\Controllers\ChauffeurController;
 use App\Http\Controllers\VehiculeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VersementController;
+use App\Http\Controllers\ContratController;
 
 Route::inertia('/', 'welcome')->name('home');
 
@@ -57,5 +58,23 @@ Route::put('/vehicules/{vehicule}', [VehiculeController::class, 'update'])
 
 Route::delete('vehicules/{vehicule}', [VehiculeController::class, 'destroy'])
     ->name('vehicules.destroy');
+
+Route::get('/contrats', [ContratController::class, 'index'])
+    ->name('contrats.index');
+
+Route::get('/contrats/create', [ContratController::class, 'create'])
+    ->name('contrats.create');
+
+Route::post('/contrats', [ContratController::class, 'store'])
+    ->name('contrats.store');
+
+Route::get('/contrats/{contrat}/edit', [ContratController::class, 'edit'])
+    ->name('contrats.edit');
+
+Route::put('/contrats/{contrat}', [ContratController::class, 'update'])
+    ->name('contrats.update');
+
+Route::put('/contrats/{contrat}/terminer', [ContratController::class, 'terminer'])
+    ->name('contrats.terminer');
 
 require __DIR__ . '/settings.php';

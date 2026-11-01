@@ -1,4 +1,4 @@
-import { Link, useForm } from "@inertiajs/react";
+import { Link, useForm } from '@inertiajs/react';
 
 export default function Index({ vehicules }) {
     const { delete: destroy, processing } = useForm();
@@ -19,10 +19,10 @@ export default function Index({ vehicules }) {
                             <p>Type : {vehicule.type}</p>
 
                             <p>
-                                Marque : {vehicule.marque ?? "Non renseignée"}
+                                Marque : {vehicule.marque ?? 'Non renseignée'}
                             </p>
 
-                            <p>Modèle : {vehicule.modele ?? "Non renseigné"}</p>
+                            <p>Modèle : {vehicule.modele ?? 'Non renseigné'}</p>
 
                             <p>Statut : {vehicule.statut}</p>
 
@@ -36,7 +36,7 @@ export default function Index({ vehicules }) {
                                 onClick={() => {
                                     if (
                                         confirm(
-                                            "Voulez-vous vraiment supprimer ce véhicule ?",
+                                            'Voulez-vous vraiment supprimer ce véhicule ?',
                                         )
                                     ) {
                                         destroy(`/vehicules/${vehicule.id}`);
