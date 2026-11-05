@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VersementController;
 use App\Http\Controllers\ContratController;
 
+
 Route::inertia('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -17,11 +18,8 @@ Route::post(
     [VersementController::class, 'store']
 )->name('versements.store');
 
-Route::get(
-    '/chauffeurs',
-    [ChauffeurController::class, 'index']
-)
-    ->name('/chauffeurs.index');
+Route::get('/chauffeurs', [ChauffeurController::class, 'index'])
+    ->name('chauffeurs.index');
 
 Route::get('/chauffeurs/create', [ChauffeurController::class, 'create'])
     ->name('chauffeurs.create');
@@ -76,5 +74,24 @@ Route::put('/contrats/{contrat}', [ContratController::class, 'update'])
 
 Route::put('/contrats/{contrat}/terminer', [ContratController::class, 'terminer'])
     ->name('contrats.terminer');
+
+Route::get('/versements', [VersementController::class, 'index'])
+    ->name('versements.index');
+
+Route::get('/versements/create', [VersementController::class, 'create'])
+    ->name('versements.create');
+
+Route::post('/versements', [VersementController::class, 'store'])
+    ->name('versements.store');
+
+Route::get('/versements/prochaine-periode', [
+    VersementController::class,
+    'prochainePeriode',
+])->name('versements.prochaine-periode');
+
+Route::get('/versements/{versement}', [VersementController::class, 'show'])
+    ->whereNumber('versement')
+    ->name('versements.show');
+
 
 require __DIR__ . '/settings.php';

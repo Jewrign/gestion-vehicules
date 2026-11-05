@@ -28,14 +28,14 @@ class ChauffeurController extends Controller
         $validated = $request->validate([
             'nom' => ['required', 'string', 'max:100'],
             'telephone' => ['required', 'string', 'max:15'],
-            'nmero_permis' => ['nullable', 'string', 'max:25'],
+            'numero_permis' => ['nullable', 'string', 'max:25'],
         ]);
 
         Chauffeur::create($validated);
 
         return redirect()
             ->route('chauffeurs.index')
-            ->with('success', 'Cahuffeur ajouté avec succés.');
+            ->with('success', 'Chauffeur ajouté avec succés.');
     }
 
     public function edit(Chauffeur $chauffeur)
@@ -48,7 +48,7 @@ class ChauffeurController extends Controller
     public function update(Request $request, Chauffeur $chauffeur)
     {
         $validated = $request->validate([
-            'nom' => ['required', 'string', 'max:100'],
+            'nom' => ['required', 'string', 'max:15'],
             'telephone' => ['required', 'string', 'max:100'],
             'numero_permis' => ['nullable', 'string', 'max:25'],
         ]);
@@ -57,7 +57,7 @@ class ChauffeurController extends Controller
 
         return redirect()
             ->route('chauffeurs.index')
-            ->with('success', 'chauffeur modifié avec succès.');
+            ->with('success', 'Chauffeur modifié avec succès.');
     }
 
     public function destroy(Chauffeur $chauffeur)
