@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VersementController;
 use App\Http\Controllers\ContratController;
 use App\Http\Controllers\DepenseController;
+use App\Http\Controllers\PanneController;
 
 
 Route::inertia('/', 'welcome')->name('home');
@@ -112,5 +113,7 @@ Route::put('/depenses/{depense}', [DepenseController::class, 'update'])
 Route::delete('/depenses/{depense}', [DepenseController::class, 'destroy'])
     ->name('depenses.destroy');
 
+Route::resource('pannes', PanneController::class)
+    ->except(['show']);
 
 require __DIR__ . '/settings.php';
