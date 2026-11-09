@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VersementController;
 use App\Http\Controllers\ContratController;
 use App\Http\Controllers\DepenseController;
+use App\Http\Controllers\EntretienController;
 use App\Http\Controllers\PanneController;
 
 
@@ -115,5 +116,9 @@ Route::delete('/depenses/{depense}', [DepenseController::class, 'destroy'])
 
 Route::resource('pannes', PanneController::class)
     ->except(['show']);
+
+Route::resource('entretiens', EntretienController::class)
+    ->except(['show']);
+
 
 require __DIR__ . '/settings.php';
