@@ -8,6 +8,7 @@ use App\Http\Controllers\ContratController;
 use App\Http\Controllers\DepenseController;
 use App\Http\Controllers\EntretienController;
 use App\Http\Controllers\PanneController;
+use App\Http\Controllers\DocumentVehiculeController;
 
 
 Route::inertia('/', 'welcome')->name('home');
@@ -120,5 +121,7 @@ Route::resource('pannes', PanneController::class)
 Route::resource('entretiens', EntretienController::class)
     ->except(['show']);
 
+Route::resource('documents-vehicules', DocumentVehiculeController::class)
+    ->except(['show']);
 
 require __DIR__ . '/settings.php';
