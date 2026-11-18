@@ -8,6 +8,7 @@ class Depense extends Model
 {
     protected $fillable = [
         'vehicule_id',
+        'versement_id',
         'type',
         'description',
         'montant',
@@ -26,5 +27,10 @@ class Depense extends Model
     public function vehicule()
     {
         return $this->belongsTo(Vehicule::class);
+    }
+
+    public function versement()
+    {
+        return $this->belongsTo(Versement::class);
     }
 }

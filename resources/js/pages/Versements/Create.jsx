@@ -6,17 +6,20 @@ export default function Create({ contrats }) {
         contrat_id: "",
         periode_debut: "",
         periode_fin: "",
-        montant_deductions: 0,
         montant_paye: 0,
     });
 
     const [contratSelectionne, setContratSelectionne] = useState(null);
+    const [depensesDeductibles, setDepensesDeductibles] = useState([]);
+    const [montantDeductions, setMontantDeductions] = useState(0);
 
     useEffect(() => {
         if (!data.contrat_id) {
             setContratSelectionne(null);
             setData("periode_debut", "");
             setData("periode_fin", "");
+            setMontantDeductions(0);
+            setDepensesDeductibles([]);
             return;
         }
 
@@ -37,6 +40,9 @@ export default function Create({ contrats }) {
                     setData("periode_debut", periode.debut);
                     setData("periode_fin", periode.fin);
                 }
+
+                setMontantDeductions(periode.montant_deductions ?? 0);
+                setDepensesDeductibles(periode.depenses ?? []);
             });
     }, [data.contrat_id]);
 
@@ -206,7 +212,7 @@ export default function Create({ contrats }) {
 
                         <div>
                             <label className="mb-1 block font-medium">
-                                Début de la période
+                                Fin de la période
                             </label>
 
                             <p className="mb-1 text-sm text-gray-500">
@@ -230,28 +236,36 @@ export default function Create({ contrats }) {
 
                     {/* Déductions */}
                     <div>
-                        <label className="mb-1 block font-medium">
-                            Déductions
+                        <label className="block text-sm font-medium">
+                            Déductions automatiques
                         </label>
 
-                        <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={data.montant_deductions}
-                            onChange={(e) =>
-                                setData("montant_deductions", e.target.value)
-                            }
-                            className="w-full rounded border p-2"
-                        />
-
-                        <p className="mt-1 text-sm text-gray-500">
-                            Montant à déduire du versement pour cette période.
+                        <p className="mt-1 font-semibold">
+                            {formatMontant(montantDeductions)}
                         </p>
 
-                        {errors.montant_deductions && (
-                            <p className="mt-1 text-sm text-red-600">
-                                {errors.montant_deductions}
+                        {depensesDeductibles.length > 0 ? (
+                            <ul className="mt-2 space-y-2">
+                                {depensesDeductibles.map((depense) => (
+                                    <li key={depense.id} className="text-sm">
+                                        <span className="font-medium">
+                                            {depense.type}
+                                        </span>
+                                        {" — "}
+                                        {depense.description ??
+                                            "Sans description"}
+                                        {" — "}
+                                        {depense.date}
+                                        {" — "}
+                                        {formatMontant(
+                                            depense.montant_deduit,
+                                        )}{" "}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="mt-1 text-sm text-gray-500">
+                                Aucune dépense déductible pour cette période.
                             </p>
                         )}
                     </div>

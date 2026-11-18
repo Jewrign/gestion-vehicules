@@ -17,6 +17,12 @@ class Contrat extends Model
         'statut'
     ];
 
+    protected $casts = [
+        'date_debut' => 'date',
+        'date_fin' => 'date',
+        'montant_journalier' => 'decimal:2',
+    ];
+
     public function chauffeur()
     {
         return $this->belongsTo(Chauffeur::class);

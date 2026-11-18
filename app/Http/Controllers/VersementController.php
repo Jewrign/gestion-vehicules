@@ -8,6 +8,8 @@ use App\Services\CalculVersementService;
 use App\Services\PeriodeVersementService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Depense;
+use Illuminate\Support\Facades\DB;
 
 class VersementController extends Controller
 {
@@ -59,9 +61,37 @@ class VersementController extends Controller
 
         $periode = $periodeService->periodeSuivante($contrat);
 
+        $depenses = Depense::query()
+            ->where('vehicule_id', $contrat->vehicule_id)
+            ->whereBetween('date', [
+                $periode['debut']->format('Y-m-d'),
+                $periode['fin']->format('Y-m-d'),
+            ])
+            ->whereDate('date', '>=', $contrat->date_debut)
+            ->when(
+                $contrat->date_fin,
+                fn($query) => $query->whereDate(
+                    'date',
+                    '<=',
+                    $contrat->date_fin
+                )
+            )
+            ->where('deductible', true)
+            ->where('montant_deduit', '>', 0)
+            ->whereNull('versement_id')
+            ->get();
+
         return response()->json([
             'debut' => $periode['debut']->format('Y-m-d'),
             'fin' => $periode['fin']->format('Y-m-d'),
+            'montant_deductions' => (float) $depenses->sum('montant_deduit'),
+            'depenses' => $depenses->map(fn($depense) => [
+                'id' => $depense->id,
+                'type' => $depense->type,
+                'description' => $depense->description,
+                'date' => $depense->date->format('Y-m-d'),
+                'montant_deduit' => (float) $depense->montant_deduit,
+            ])->values(),
         ]);
     }
 
@@ -74,7 +104,6 @@ class VersementController extends Controller
             'contrat_id' => ['required', 'exists:contrats,id'],
             'periode_debut' => ['required', 'date'],
             'periode_fin' => ['required', 'date', 'after_or_equal:periode_debut'],
-            'montant_deductions' => ['nullable', 'numeric', 'min:0'],
             'montant_paye' => ['nullable', 'numeric', 'min:0'],
         ]);
 
@@ -89,7 +118,6 @@ class VersementController extends Controller
                 ->withInput();
         }
 
-        // Vérifier qu'un versement identique n'existe pas déjà.
         $existe = Versement::where('contrat_id', $contrat->id)
             ->where('periode_debut', $validated['periode_debut'])
             ->where('periode_fin', $validated['periode_fin'])
@@ -103,37 +131,75 @@ class VersementController extends Controller
                 ->withInput();
         }
 
-        $montantDeductions = (float) ($validated['montant_deductions'] ?? 0);
-        $montantPaye = (float) ($validated['montant_paye'] ?? 0);
-
-        $dernierVersement = $contrat->versements()
-            ->latest('periode_fin')
-            ->first();
-
-        $montantArriere = $dernierVersement?->nouvel_arriere ?? 0;
-
-        $resultat = $calculService->calculer(
+        $versement = DB::transaction(function () use (
             $contrat,
-            \Carbon\Carbon::parse($validated['periode_debut']),
-            \Carbon\Carbon::parse($validated['periode_fin']),
-            (float) $montantArriere,
-            $montantDeductions,
-            $montantPaye
-        );
+            $validated,
+            $calculService
+        ) {
+            // Récupérer les dépenses déductibles non encore affectées.
+            $depenses = Depense::query()
+                ->where('vehicule_id', $contrat->vehicule_id)
+                ->whereBetween('date', [
+                    $validated['periode_debut'],
+                    $validated['periode_fin'],
+                ])
+                ->whereDate('date', '>=', $contrat->date_debut)
+                ->when(
+                    $contrat->date_fin,
+                    fn($query) => $query->whereDate(
+                        'date',
+                        '<=',
+                        $contrat->date_fin
+                    )
+                )
+                ->where('deductible', true)
+                ->where('montant_deduit', '>', 0)
+                ->whereNull('versement_id')
+                ->lockForUpdate()
+                ->get();
 
-        Versement::create([
-            'contrat_id' => $contrat->id,
-            'periode_debut' => $validated['periode_debut'],
-            'periode_fin' => $validated['periode_fin'],
-            'montant_normal' => $resultat['montant_normal'],
-            'montant_jours_non_payables' => $resultat['montant_jours_non_payables'],
-            'montant_deductions' => $resultat['montant_deductions'],
-            'montant_arriere' => $resultat['montant_arriere'],
-            'montant_du' => $resultat['montant_du'],
-            'montant_paye' => $resultat['montant_paye'],
-            'nouvel_arriere' => $resultat['nouvel_arriere'],
-            'statut' => $resultat['statut'],
-        ]);
+            // Calculer automatiquement le total des déductions.
+            $montantDeductions = (float) $depenses->sum('montant_deduit');
+
+            $dernierVersement = $contrat->versements()
+                ->latest('periode_fin')
+                ->first();
+
+            $montantArriere = $dernierVersement?->nouvel_arriere ?? 0;
+
+            // Calculer le versement.
+            $resultat = $calculService->calculer(
+                $contrat,
+                \Carbon\Carbon::parse($validated['periode_debut']),
+                \Carbon\Carbon::parse($validated['periode_fin']),
+                (float) $montantArriere,
+                $montantDeductions,
+                (float) ($validated['montant_paye'] ?? 0)
+            );
+
+            // Enregistrer le versement.
+            $versement = $contrat->versements()->create([
+                'periode_debut' => $validated['periode_debut'],
+                'periode_fin' => $validated['periode_fin'],
+                'montant_normal' => $resultat['montant_normal'],
+                'montant_jours_non_payables' => $resultat['montant_jours_non_payables'],
+                'montant_deductions' => $resultat['montant_deductions'],
+                'montant_arriere' => $resultat['montant_arriere'],
+                'montant_du' => $resultat['montant_du'],
+                'montant_paye' => $resultat['montant_paye'],
+                'nouvel_arriere' => $resultat['nouvel_arriere'],
+                'statut' => $resultat['statut'],
+            ]);
+
+            // Affecter les dépenses à ce versement.
+            foreach ($depenses as $depense) {
+                $depense->update([
+                    'versement_id' => $versement->id,
+                ]);
+            }
+
+            return $versement;
+        });
 
         return redirect()
             ->route('versements.index')

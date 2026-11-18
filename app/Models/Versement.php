@@ -36,4 +36,9 @@ class Versement extends Model
     {
         return $this->belongsTo(Contrat::class);
     }
+
+    public function depenses()
+    {
+        return $this->hasMany(Depense::class);
+    }
 }
