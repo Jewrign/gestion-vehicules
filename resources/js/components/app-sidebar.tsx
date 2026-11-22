@@ -1,7 +1,19 @@
+
+import {
+    LayoutGrid,
+    Users,
+    Car,
+    FileText,
+    Wallet,
+    Receipt,
+    BarChart3,
+    Wrench,
+    Settings,
+    FileCheck,
+} from 'lucide-react';
+
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -16,24 +28,79 @@ import {
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 
-const mainNavItems: NavItem[] = [
+const navigationGroups: {
+    title: string;
+    items: NavItem[];
+}[] = [
     {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
+        title: 'GÉNÉRAL',
+        items: [
+            {
+                title: 'Tableau de bord',
+                href: dashboard(),
+                icon: LayoutGrid,
+            },
+        ],
     },
-];
-
-const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
+        title: 'GESTION',
+        items: [
+            {
+                title: 'Chauffeurs',
+                href: '/chauffeurs',
+                icon: Users,
+            },
+            {
+                title: 'Véhicules',
+                href: '/vehicules',
+                icon: Car,
+            },
+            {
+                title: 'Contrats',
+                href: '/contrats',
+                icon: FileText,
+            },
+        ],
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'FINANCES',
+        items: [
+            {
+                title: 'Versements',
+                href: '/versements',
+                icon: Wallet,
+            },
+            {
+                title: 'Dépenses',
+                href: '/depenses',
+                icon: Receipt,
+            },
+            {
+                title: 'Rapports mensuels',
+                href: '/rapports/mensuel',
+                icon: BarChart3,
+            },
+        ],
+    },
+    {
+        title: 'SUIVI TECHNIQUE',
+        items: [
+            {
+                title: 'Pannes',
+                href: '/pannes',
+                icon: Wrench,
+            },
+            {
+                title: 'Entretiens',
+                href: '/entretiens',
+                icon: Settings,
+            },
+            {
+                title: 'Documents véhicules',
+                href: '/documents-vehicules',
+                icon: FileCheck,
+            },
+        ],
     },
 ];
 
@@ -53,11 +120,10 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain groups={navigationGroups} />
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

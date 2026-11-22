@@ -10,13 +10,15 @@ use App\Http\Controllers\EntretienController;
 use App\Http\Controllers\PanneController;
 use App\Http\Controllers\DocumentVehiculeController;
 use App\Http\Controllers\RapportMensuelController;
+use App\Http\Controllers\DashboardController;
 
 
 Route::inertia('/', 'welcome')->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
-});
+Route::middleware(['auth', 'verified'])->group(function () {});
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
 
 Route::post(
     '/contrats/{contrat}/versements',
