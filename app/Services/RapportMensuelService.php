@@ -285,6 +285,7 @@ class RapportMensuelService
 
     // Récupérer les dépenses du mois.
     $depenses = Depense::query()
+      ->with('vehicule')
       ->whereBetween('date', [
         $debutMois->toDateString(),
         $finMois->toDateString(),
@@ -326,7 +327,10 @@ class RapportMensuelService
         $nonAttribuees[] = [
           'depense_id' => $depense->id,
           'vehicule_id' => $depense->vehicule_id,
+          'vehicule' => $depense->vehicule?->immatriculation,
           'date' => $dateDepense->toDateString(),
+          'type' => $depense->type,
+          'description' => $depense->description,
           'montant' => (float) $depense->montant,
         ];
 
@@ -338,9 +342,17 @@ class RapportMensuelService
         $ambigues[] = [
           'depense_id' => $depense->id,
           'vehicule_id' => $depense->vehicule_id,
+          'vehicule' => $depense->vehicule?->immatriculation,
           'date' => $dateDepense->toDateString(),
+          'type' => $depense->type,
+          'description' => $depense->description,
+          'montant' => (float) $depense->montant,
           'contrats' => $contratsCorrespondants
-            ->pluck('id')
+            ->map(fn($contrat) => [
+              'id' => $contrat->id,
+              'chauffeur' => $contrat->chauffeur->nom,
+            ])
+            ->values()
             ->all(),
         ];
 
@@ -364,7 +376,10 @@ class RapportMensuelService
       }
 
       $montant = (float) $depense->montant;
-      $montantDeduit = (float) $depense->montant_deduit;
+
+      $montantDeduit = $depense->versement_id !== null
+        ? (float) $depense->montant_deduit
+        : 0.0;
 
       $totauxParContrat[$contratId]['total_depenses'] += $montant;
       $totauxParContrat[$contratId]['total_deduit'] += $montantDeduit;

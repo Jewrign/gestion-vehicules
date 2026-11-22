@@ -9,6 +9,7 @@ use App\Http\Controllers\DepenseController;
 use App\Http\Controllers\EntretienController;
 use App\Http\Controllers\PanneController;
 use App\Http\Controllers\DocumentVehiculeController;
+use App\Http\Controllers\RapportMensuelController;
 
 
 Route::inertia('/', 'welcome')->name('home');
@@ -123,5 +124,8 @@ Route::resource('entretiens', EntretienController::class)
 
 Route::resource('documents-vehicules', DocumentVehiculeController::class)
     ->except(['show']);
+
+Route::get('/rapports/mensuel', [RapportMensuelController::class, 'index'])
+    ->name('rapports.mensuel');
 
 require __DIR__ . '/settings.php';
